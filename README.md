@@ -117,3 +117,14 @@ This facilitates the execution of all tests efficiently and automatically, which
 - Then use the command "python Payroll_Console.py".
 **A menu will appear and you'll type the information needed.
 
+**To run the tests**
+
+- Open the terminal on your computer
+- In the terminal use the command cd to enter the desktop; "cd Desktop" (it depends on the name of your desktop or what path you have to get to it).
+- Use the same command to enter the application "cd Payroll-main".
+- Use the same command to enter the tests folder, which is where the folders with the files necessary for the application to work are organized "cd tests".
+- then copy the path you have so far in the terminal and then type the command set PYTHONPATH= here is the path you copied, example set PYTHONPATH=C:\ruta=Desktop "Payroll-main".
+- Then use the command "python test_unittest.py".
+**A menu will appear and you'll type the information needed.
+
+
