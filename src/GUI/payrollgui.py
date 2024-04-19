@@ -11,6 +11,7 @@ from kivy.core.window import Window
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.floatlayout import FloatLayout
 
+"""Importing the sys module to manipulate import path"""
 import sys
 
 sys.path.append("src")
@@ -22,34 +23,36 @@ from logic.Payroll_Logic import *
 class WelcomePopup(Popup):
     def __init__(self, **kwargs):
         super(WelcomePopup, self).__init__(**kwargs)
-        self.title = 'Payroll payment'  # Título del Popup
-        self.background_color = [8, 8, 8, 8]  # Color blanco para el fondo
+        """Title of the Popup"""
+        self.title = 'Payroll payment'
+        self.background_color = [8, 8, 8, 8]  
         main_box = BoxLayout(orientation='vertical')
         
-        # BoxLayout para la imagen
+        """BoxLayout for the image"""
         image_box = BoxLayout()
-        image = Image(source='53419.jpg')  # Reemplaza '53419.jpg' con la ruta de tu imagen
+        image = Image(source='53419.jpg')
         image_box.add_widget(image)
         
-        # BoxLayout para el contenido
+        """Creating a vertical BoxLayout for the content and a label widget with welcome message"""
         content_box = BoxLayout(orientation='vertical')
-        label = Label(text='Welcome to the payroll payment App', font_size='35sp', halign='center', color=[0, 0, 0, 1])  # Color blanco para el texto
+        label = Label(text='Welcome to the payroll payment App', font_size='35sp', halign='center', color=[0, 0, 0, 1])  
         with label.canvas.before:
-            Color(1, 1, 1, 1)  # Color blanco para el fondo del layout del Label
+            Color(1, 1, 1, 1)
             self.rect = Rectangle(size=label.size, pos=label.pos)
         label.bind(size=self._update_rect, pos=self._update_rect)
         
         button_box = BoxLayout(orientation='horizontal')
-        button = Button(text='Calculate your payroll', background_color=[0.5, 0.5, 1, 1], size_hint=(.7, .7))  # Color azul claro para el botón, tamaño aumentado
+        button = Button(text='Calculate your payroll', background_color=[0.5, 0.5, 1, 1], size_hint=(.7, .7))
+        """Binding button press to dismiss the Popup"""
         button.bind(on_press=self.dismiss)
-        button_box.add_widget(Widget())  # Espacio vacío a la izquierda del botón
-        button_box.add_widget(button)  # Botón
-        button_box.add_widget(Widget())  # Espacio vacío a la derecha del botón
+        button_box.add_widget(Widget())  
+        button_box.add_widget(button)
+        button_box.add_widget(Widget())  
         
         content_box.add_widget(label)
         content_box.add_widget(button_box)
         
-        # Agrega los BoxLayouts al BoxLayout principal
+        """Adding the BoxLayouts to the main BoxLayout"""
         main_box.add_widget(image_box)
         main_box.add_widget(content_box)
         
@@ -61,7 +64,7 @@ class WelcomePopup(Popup):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
-
+"""Creating the input data widgets using a GridLayout"""
 class GUIPayrollApp(App):
     def build(self):
         Window.clearcolor = 'white'
@@ -130,7 +133,7 @@ class GUIPayrollApp(App):
         layout.add_widget(calculate_button)
 
        
-        # Agregar un Label para mostrar el resultado del cálculo
+        """Creating the button to calculate everything"""
         self.result_label = Label(text="", color='black')
         layout.add_widget(self.result_label)
         
@@ -139,6 +142,8 @@ class GUIPayrollApp(App):
         
         return layout
     
+
+    """Creating exceptions to catch errors"""
     def calculate_payroll(self, sender):
         try:
             salary = float(self.basic_salary.text)
@@ -258,6 +263,7 @@ class GUIPayrollApp(App):
             return
 
         
+        """If all the values ​​are valid, then proceed with the calculations"""
         withhold = CalculateWithholdingTax(salary)
         result = CalculatePayrollPaymentCallingAllFunctions(salary, subsidy, workeddays,holidaytimeworked, extralighthoursworked,
                                                             extranighthoursworked, extraholidaylighthours, extraholidaynighthours, healthinsurance,
@@ -265,7 +271,7 @@ class GUIPayrollApp(App):
         self.result.text = str(result)
 
     
-
+        """Applying bold and italic to the text of the results"""
         
         output = f"""
         The salary is: [i][b]{salary}[/b][/i]
@@ -294,19 +300,13 @@ class GUIPayrollApp(App):
         popup.open()
 
 
-    def validate(self):
-        try:
-            float(self.basic_salary.text)
-        except ValueError:
-            raise Exception("El valor del salario debe ser válido")
 
-
-
+"""Creating a popup window to display the output variables and results"""
 class ResultPopup(Popup):
     def __init__(self, result, **kwargs):
         super(ResultPopup, self).__init__(**kwargs)
-        self.title = 'Payroll Results'  # Título del Popup
-        self.background_color = [1, 1, 1, 1]  # Color blanco para el fondo
+        self.title = 'Payroll Results'  
+        self.background_color = [1, 1, 1, 1]  
 
         main_box = FloatLayout()
         with main_box.canvas.before:
@@ -314,9 +314,9 @@ class ResultPopup(Popup):
             self.rect = Rectangle(size=main_box.size, pos=main_box.pos)
         main_box.bind(size=self._update_rect, pos=self._update_rect)
 
-        # BoxLayout para el contenido
-        content_box = BoxLayout(orientation='vertical', size_hint=(1, 0.8), pos_hint={'x': 0, 'y': 0.1})  # Ajusta estos valores
-        label = Label(text=result, font_size='20sp', halign='left', color=[0, 0, 0, 1], bold=False, markup= True)  # Texto en negrita
+        """Boxlayout for the content"""
+        content_box = BoxLayout(orientation='vertical', size_hint=(1, 0.8), pos_hint={'x': 0, 'y': 0.1}) 
+        label = Label(text=result, font_size='20sp', halign='left', color=[0, 0, 0, 1], bold=False, markup= True) 
         with label.canvas.before:
             Color(1, 1, 1, 1) 
             self.rect_label = Rectangle(size=label.size, pos=label.pos)
@@ -324,17 +324,17 @@ class ResultPopup(Popup):
 
         content_box.add_widget(label)
 
-        # BoxLayout para los botones
+        """BoxLayout for the buttons"""
         button_box = BoxLayout(orientation='horizontal', size_hint=(1, 0.2), pos_hint={'x': 0, 'y': 0})
 
-        # botón "Return"
+        """Return button"""
         back_button = Button(text='Return', size_hint=(0.5, 1), background_color=(0, 0, 1, 1))
-        back_button.bind(on_press=self.dismiss)  # Cerrar la ventana emergente al presionar el botón
+        back_button.bind(on_press=self.dismiss)
         button_box.add_widget(back_button)
 
-        # botón "Close App"
+        """Close App button"""
         close_button = Button(text='Close App', size_hint=(0.5, 1), background_color=(0, 0, 1, 1))
-        close_button.bind(on_press=self.close_app)  # Cerrar la aplicación al presionar el botón
+        close_button.bind(on_press=self.close_app)  
         button_box.add_widget(close_button)
 
         content_box.add_widget(button_box)
@@ -346,10 +346,12 @@ class ResultPopup(Popup):
 
         self.content = main_box
 
+    """Updating the position and size of the 'rect' widget to match the position of the 'instance' widget"""
     def _update_rect(self, instance, value):
         self.rect.pos = instance.pos
         self.rect.size = instance.size
 
+    """Updating the position, size and text size of the 'rect_label' widget"""
     def _update_rect_label(self, instance, value):
         self.rect_label.pos = instance.pos
         self.rect_label.size = instance.size
