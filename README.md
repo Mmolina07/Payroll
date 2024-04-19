@@ -107,12 +107,12 @@ This facilitates the execution of all tests efficiently and automatically, which
 - To execute the graphic interface elaborated with kivy, you must enter the module "src" where the GUI (Graphic user interface) folder is located, which contains "payrollgui", which is where the interface is executed.
 **To run the console
   
-Open the terminal on your computer
-In the terminal use the command cd to enter the desktop; "cd Desktop" (it depends on the name of your desktop or what path you have to get to it).
-Use the same command to enter the application "cd Payroll-main".
-Use the same command to enter the src folder, which is where the folders with the files necessary for the application to work are organized "cd src".
-then copy the path you have so far in the terminal and then type the command set PYTHONPATH= here is the path you copied, example set PYTHONPATH=C:\ruta=C:\ruta=Desktop "Payroll-main".
-use the cd command to enter the console folder which is where the "cd console" menu is located.
-Then use the command "python Payroll_Console.py".
-A menu will appear and you'll type the information needed.
+- Open the terminal on your computer
+- In the terminal use the command cd to enter the desktop; "cd Desktop" (it depends on the name of your desktop or what path you have to get to it).
+- Use the same command to enter the application "cd Payroll-main".
+- Use the same command to enter the src folder, which is where the folders with the files necessary for the application to work are organized "cd src".
+- then copy the path you have so far in the terminal and then type the command set PYTHONPATH= here is the path you copied, example set PYTHONPATH=C:\ruta=C:\ruta=Desktop "Payroll-main".
+- use the cd command to enter the console folder which is where the "cd console" menu is located.
+- Then use the command "python Payroll_Console.py".
+**A menu will appear and you'll type the information needed.
 
