@@ -104,8 +104,9 @@ This facilitates the execution of all tests efficiently and automatically, which
 
 
 ## Instructions to run 
-- To execute the graphic interface elaborated with kivy, you must enter the module "src" where the GUI (Graphic user interface) folder is located, which contains "payrollgui", which is where the interface is executed.
-**To run the console
+- To execute the graphic interface elaborated with kivy, you must open the file in an interpreter and run it from the module "src" where the GUI (Graphic user interface) folder is located, which contains "payrollgui", which is where the interface is executed.
+  
+**To run the console**
   
 - Open the terminal on your computer
 - In the terminal use the command cd to enter the desktop; "cd Desktop" (it depends on the name of your desktop or what path you have to get to it).
