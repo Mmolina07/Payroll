@@ -75,9 +75,9 @@ class GUIPayrollApp(App):
         self.basic_salary = TextInput(font_size=20)
         layout.add_widget(self.basic_salary)
 
-        layout.add_widget( Label(text="Transport subsidy", color= 'black') )
-        self.transport = TextInput(font_size=20)
-        layout.add_widget(self.transport)
+        #layout.add_widget( Label(text="Transport subsidy", color= 'black') )
+        #self.transport = TextInput(font_size=20)
+        #layout.add_widget(self.transport)
 
         layout.add_widget( Label(text="Worked days", color= 'black') )
         self.worked_days = TextInput(font_size=20)
@@ -155,15 +155,6 @@ class GUIPayrollApp(App):
             return
 
         try:
-            subsidy = float(self.transport.text)
-            if subsidy > 162000:
-                self.result_label.text = "Subsidy may not be more than 162000 "
-                return
-        except ValueError:
-            self.result_label.text = "invalid value for subsidy , please correct it."
-            return
-
-        try:
             workeddays = int(self.worked_days.text)
             if workeddays > 30:
                 self.result_label.text = "30 days cannot be exceeded for the payroll process."
@@ -205,7 +196,7 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The maximum of holiday extra light hours to work is 12"
                 return
         except ValueError:
-            self.result.text = "invalid value for Holiday extra daylight worked hours , please correct it."
+            self.result_label.text = "invalid value for Holiday extra daylight worked hours , please correct it."
             return
 
         try:
@@ -214,7 +205,7 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The maximum of holiday extra night hours to work is 12"
                 return
         except ValueError:
-            self.result.text = "invalid value for Holiday extra night worked hours , please correct it."
+            self.result_label.text = "invalid value for Holiday extra night worked hours , please correct it."
             return
 
         try:
@@ -223,7 +214,7 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The health insurance may not exceed 4%"
                 return
         except ValueError:
-            self.result.text = "invalid value for Health insurance percentage , please correct it."
+            self.result_label.text = "invalid value for Health insurance percentage , please correct it."
             return
 
         try:
@@ -232,7 +223,7 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The pension contribution may not exceed 4%"
                 return
         except ValueError:
-            self.result.text = "invalid value for Pension contribution percentage , please correct it."
+            self.result_label.text = "invalid value for Pension contribution percentage , please correct it."
             return
 
         try:
@@ -241,7 +232,7 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The maximum of the solidarity fund may not exceed 2.8%"
                 return
         except ValueError:
-            self.result.text = "invalid value for Pension solidarity fund contribution percentage , please correct it."
+            self.result_label.text = "invalid value for Pension solidarity fund contribution percentage , please correct it."
             return
 
         try:
@@ -250,7 +241,7 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The disability days may not exceed 30 days"
                 return
         except ValueError:
-            self.result.text = "invalid value for Days of disability , please correct it."
+            self.result_label.text = "invalid value for Days of disability , please correct it."
             return
 
         try:
@@ -259,13 +250,13 @@ class GUIPayrollApp(App):
                 self.result_label.text = "The leave days may not exceed 30 days"
                 return
         except ValueError:
-            self.result.text = "invalid value for leave days , please correct it."
+            self.result_label.text = "invalid value for leave days , please correct it."
             return
 
         
         """If all the values ​​are valid, then proceed with the calculations"""
         withhold = CalculateWithholdingTax(salary)
-        result = CalculatePayrollPaymentCallingAllFunctions(salary, subsidy, workeddays,holidaytimeworked, extralighthoursworked,
+        result = CalculatePayrollPaymentCallingAllFunctions(salary, workeddays,holidaytimeworked, extralighthoursworked,
                                                             extranighthoursworked, extraholidaylighthours, extraholidaynighthours, healthinsurance,
                                                             pensioncontribution, solidarity, disabilitydays, leavedays, withhold)
         self.result.text = str(result)
@@ -275,7 +266,6 @@ class GUIPayrollApp(App):
         
         output = f"""
         The salary is: [i][b]{salary}[/b][/i]
-        The transportation allowance is:  [i][b]{subsidy}[/b][/i]
         The value to be paid for holidays is:  [i][b]{holidaytimeworked}[/b][/i]
         The value to be paid for daylight extra hours is:  [i][b]{extralighthoursworked}[/b][/i]
         The value to be paid for night extra hours is:  [i][b]{extranighthoursworked}[/b][/i]
@@ -293,8 +283,6 @@ class GUIPayrollApp(App):
         popup.open()
         
 
-
-    
     def on_start(self):
         popup = WelcomePopup()
         popup.open()

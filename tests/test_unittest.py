@@ -6,6 +6,8 @@ sys.path.append("src")
 
 """Payroll_Logic module is imported, which contains the program logic."""
 import logic.Payroll_Logic as Payroll_Logic
+from logic.Payroll_Logic import *
+
 
 
 
@@ -17,187 +19,206 @@ class PayrollTests(unittest.TestCase):
     def testCalculateDailySalary1(self):
         BasicSalary = 2000000
         WorkedDays = 30
-        Result = Payroll_Logic.CalculateDailySalary(BasicSalary,WorkedDays )
+        accruals = Accruals(BasicSalary, WorkedDays, 0, 0, 0, 0, 0, 0, 0)
+        Result = accruals.CalculateDailySalary()
         self.assertEqual(round(Result,1), 66666.7)
 
     """Unit test of the CalculatePayrollPayment01 method:
     2nd normal unit test to verify that Calculate payroll method works correctly"""
     def testCalculatePayrollPayment01(self):
-        BasicSalary = 8000000
-        TransportSubsidy = 0
-        WorkedDays = 30
-        HolidayTimeWorked = 1
-        ExtraDaylightHoursWorked = 1
-        ExtraNightHoursWorked = 0
-        HolidayExtraDaylightHoursWorked = 0
-        HolidayExtraNightHoursWorked = 0
-        HealthInsurancePercentage = 4
-        PensionContributionPercentage = 4
-        PensionSolidarityFundContributionPercentage = 4
-        DaysOfDisability = 0
-        LeaveDays = 0
-        Withholding = 733920
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, 
-        HolidayTimeWorked, ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, 
-        HolidayExtraNightHoursWorked, HealthInsurancePercentage, PensionContributionPercentage, 
-        PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays, Withholding)
-        self.assertEqual(round(Result, 1), 6512995)
+
+        accruals = Accruals(BasicSalary = 8000000,
+        WorkedDays = 30,
+        HolidayTimeWorked = 1,
+        ExtraDaylightHoursWorked = 1,
+        ExtraNightHoursWorked = 0,
+        HolidayExtraDaylightHoursWorked = 0,
+        HolidayExtraNightHoursWorked = 0,DaysOfDisability = 0,
+        LeaveDays = 0,)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage = 4,
+        PensionContributionPercentage = 4,
+        PensionSolidarityFundContributionPercentage = 4)
+
+        salary_calculator = SalaryCalculator(accruals, deductions)
+
+        Result = salary_calculator.calculate_net_salary() 
+        self.assertEqual(round(Result, 1), 6488165.2)
 
     """Unit test of the HealthInsurance method:
     3rd normal unit test to verify that HealthInsurance method works correctly"""
     def testCalculateHealthInsurance(self):
         BasicSalary = 7500000
         HealthInsurancePercentage = 4
-        Result = Payroll_Logic.CalculateHealthInsurance(BasicSalary, HealthInsurancePercentage)
+
+        accruals = Accruals(BasicSalary, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=0, LeaveDays=0)
+
+
+        deductions = Deductions(accruals, HealthInsurancePercentage, PensionContributionPercentage=0,
+                                PensionSolidarityFundContributionPercentage=0)
+
+    
+        Result = deductions.CalculateHealthInsurance()
+
         self.assertEqual(Result, 300000)
 
     """Unit test of the CalculatePensionContribution method:
     4th normal unit test to verify that CalculatePensionContribution method works correctly"""
     def testCalculatePensionContribution(self):
         BasicSalary = 7500000
-        PensionContributionPercentage = 4
-        Result = Payroll_Logic.CalculatePensionContribution(BasicSalary, PensionContributionPercentage)
+
+        accruals = Accruals(BasicSalary, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=0, LeaveDays=0)
+
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=4,
+                                PensionSolidarityFundContributionPercentage=0)
+
+    
+        Result = deductions.CalculatePensionContribution()
+
         self.assertEqual(Result, 300000)
 
     """Unit test of the CalculatePensionSolidarityFundContribution method:
     5th normal unit test to verify that CalculatePensionSolidarityFundContribution method works correctly"""
     def testCalculatePensionSolidarityFundContribution(self):
-        BasicSalary = 5000000
-        PensionSolidarityFundContributionPercentage = 2
-        Result = Payroll_Logic.CalculatePensionSolidarityFundContribution(BasicSalary, PensionSolidarityFundContributionPercentage)
+        BasicSalary = 5000000 
+        accruals = Accruals(BasicSalary, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=0, LeaveDays=0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=0,
+                                PensionSolidarityFundContributionPercentage=2)
+
+        Result = deductions.CalculatePensionSolidarityFundContribution()
+
         self.assertEqual(Result, 100000)
 
     """Unit test of the CalculateDisabilityTimeValue method:
     6th normal unit test to verify that CalculateDisabilityTimeValue method works correctly"""
     def testCalculateDisabilityTimeValue1(self):
-        DailySalary = 70000
-        DaysOfDisability = 2
-        resultado = Payroll_Logic.CalculateDisabilityTimeValue(DailySalary, DaysOfDisability)
-        self.assertEqual(round(resultado,1), 93324)
+        accruals = Accruals(BasicSalary=7000000, WorkedDays=30,
+                            HolidayTimeWorked=0,
+                            ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0,
+                            HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=2, LeaveDays=0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=0,
+                                PensionSolidarityFundContributionPercentage=0)
+        resultado = accruals.CalculateDisabilityTimeValue()
+
+        self.assertEqual(round(resultado,1), 311080.0)
 
     """Unit test of the CalculateDisabilityTimeValue method:
     7th normal unit test to verify the calculation of disability value greater than 90 and less than 540 days."""
     def testCalculateDisabilityTimeValue2(self):
-        DailySalary = 70000
-        DaysOfDisability = 180
-        Result = Payroll_Logic.CalculateDisabilityTimeValue(DailySalary, DaysOfDisability)
-        self.assertEqual(round(Result,1), 6300000)
+        
+        accruals = Accruals(BasicSalary=700000, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0, ExtraNightHoursWorked=0,
+                            HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=180, LeaveDays=0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=0,
+                                PensionSolidarityFundContributionPercentage=0)
+
+        Result = accruals.CalculateDisabilityTimeValue()
+
+        self.assertEqual(round(Result,1), 2100000.0)
 
 
     """Unit test of the CalculatePayrollPayment method:
     1st exceptional unit test in the case that a person with a high salary also has high deductions"""
     def testCalculatePayrollPayment1(self):
-        BasicSalary = 20000000
-        TransportSubsidy = 0
-        WorkedDays = 30
-        HolidayTimeWorked = 0
-        ExtraDaylightHoursWorked = 0
-        ExtraNightHoursWorked = 0
-        HolidayExtraDaylightHoursWorked = 0
-        HolidayExtraNightHoursWorked = 0
-        HealthInsurancePercentage = 7
-        PensionContributionPercentage = 8
-        PensionSolidarityFundContributionPercentage = 3
-        DaysOfDisability = 0
-        LeaveDays = 0
-        Withholding = 290476.75
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, 
-        HolidayTimeWorked, ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, 
-        HolidayExtraNightHoursWorked, HealthInsurancePercentage, PensionContributionPercentage, 
-        PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays, Withholding)
-        self.assertEqual(round(Result, 1), 12143837)
+
+        accruals = Accruals(BasicSalary=20000000, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=0, LeaveDays=0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=7, PensionContributionPercentage=8,
+                                PensionSolidarityFundContributionPercentage=3)
+      
+        salary_calculator = SalaryCalculator(accruals, deductions)
+
+        Result = salary_calculator.calculate_net_salary()
+        self.assertEqual(round(Result, 1), 12143837.0)
 
     """Unit test of the CalculatePayrollPayment method:
     2nd exceptional unit test in the case of a high number of days of disability"""
     def testCalculatePayrollPayment2(self):
-        BasicSalary = 1500000
-        TransportSubsidy = 162000
-        WorkedDays = 10
-        HolidayTimeWorked = 0
-        ExtraDaylightHoursWorked = 0
-        ExtraNightHoursWorked = 0
-        HolidayExtraDaylightHoursWorked = 0
-        HolidayExtraNightHoursWorked = 0
-        HealthInsurancePercentage = 4
-        PensionContributionPercentage = 4
-        PensionSolidarityFundContributionPercentage = 4
-        DaysOfDisability = 20
-        LeaveDays = 0
-        Withholding = 0
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, HolidayTimeWorked, 
-        ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, HolidayExtraNightHoursWorked, 
-        HealthInsurancePercentage, PensionContributionPercentage, PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays,
-        Withholding)
-        self.assertEqual(round(Result,1), 1148600)
+
+        accruals = Accruals(BasicSalary=1500000, WorkedDays=10, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=20, LeaveDays=0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=4, PensionContributionPercentage=4,
+                                PensionSolidarityFundContributionPercentage=4)
+        
+        salary_calculator = SalaryCalculator(accruals, deductions)
+         
+        Result = salary_calculator.calculate_net_salary()
+        self.assertEqual(round(Result,1), 1169168)
 
     """Unit test of the CalculatePayrollPayment method:
     3rd exceptional unit test in the case of a person who started working in the middle of the month"""
     def testCalculatePayrollPayment3(self):
-        BasicSalary = 4000000
-        TransportSubsidy = 0
-        WorkedDays = 15
-        HolidayTimeWorked = 0
-        ExtraDaylightHoursWorked = 0
-        ExtraNightHoursWorked = 0
-        HolidayExtraDaylightHoursWorked = 0
-        HolidayExtraNightHoursWorked = 0
-        HealthInsurancePercentage = 4
-        PensionContributionPercentage = 4
-        PensionSolidarityFundContributionPercentage = 4
-        DaysOfDisability = 0
-        LeaveDays = 0
-        Withholding = 0
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, HolidayTimeWorked, 
-        ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, HolidayExtraNightHoursWorked, 
-        HealthInsurancePercentage, PensionContributionPercentage, PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays,
-        Withholding)
-        self.assertEqual(round(Result, 1), 1520000)
+        accruals = Accruals(BasicSalary=4000000, WorkedDays=15, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
+                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
+                            , DaysOfDisability=0, LeaveDays=0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage=4, PensionContributionPercentage=4,
+                                PensionSolidarityFundContributionPercentage=4)
+        
+        salary_calculator = SalaryCalculator(accruals, deductions)
+         
+        Result = salary_calculator.calculate_net_salary()
+        self.assertEqual(round(Result, 1), 1760000)
 
     """Unit test of the TestCalculatePayrollPayment method:
     4th exceptional unit test in the case of a person worked a lot of extra hours"""
     def testCalculatePayrollPayment4(self):
-        BasicSalary = 6000000
-        TransportSubsidy = 0
-        WorkedDays = 30
-        HolidayTimeWorked = 0
-        ExtraDaylightHoursWorked = 5
-        ExtraNightHoursWorked = 6
-        HolidayExtraDaylightHoursWorked = 5
-        HolidayExtraNightHoursWorked = 5
-        HealthInsurancePercentage = 4
-        PensionContributionPercentage = 4
-        PensionSolidarityFundContributionPercentage = 4
-        DaysOfDisability = 0
-        LeaveDays = 0
-        Withholding = 290476.75
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, HolidayTimeWorked, 
-        ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, HolidayExtraNightHoursWorked, 
-        HealthInsurancePercentage, PensionContributionPercentage, PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays,
-        Withholding)
-        self.assertEqual(round(Result, 1), 5206654.2)
+
+        accruals = Accruals(BasicSalary = 6000000,
+        WorkedDays = 30,
+        HolidayTimeWorked = 0,
+        ExtraDaylightHoursWorked = 5,
+        ExtraNightHoursWorked = 6,
+        HolidayExtraDaylightHoursWorked = 5,
+        HolidayExtraNightHoursWorked = 5,
+        DaysOfDisability = 0,
+        LeaveDays = 0)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage = 4,
+        PensionContributionPercentage = 4,
+        PensionSolidarityFundContributionPercentage = 4)
+
+        salary_calculator = SalaryCalculator(accruals, deductions)
+
+        Result = salary_calculator.calculate_net_salary() 
+        self.assertEqual(round(Result, 1 ), 5180598.5)
 
     """Unit test of the CalculatePayrollPayment method:
     5th exceptional unit test in the case of a high number of leave days"""
     def testCalculatePayrollPayment5(self):
-        BasicSalary = 2500000
-        TransportSubsidy = 162000
-        WorkedDays = 5
-        HolidayTimeWorked = 0
-        ExtraDaylightHoursWorked = 0
-        ExtraNightHoursWorked = 0
-        HolidayExtraDaylightHoursWorked = 0
-        HolidayExtraNightHoursWorked = 0
-        HealthInsurancePercentage = 4
-        PensionContributionPercentage = 4
-        PensionSolidarityFundContributionPercentage = 4
-        DaysOfDisability = 0
-        LeaveDays = 25
-        Withholding= 0
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, HolidayTimeWorked, 
-        ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, HolidayExtraNightHoursWorked, 
-        HealthInsurancePercentage, PensionContributionPercentage, PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays,
-        Withholding)
-        self.assertEqual(round(Result, 1), 2362000) 
+    
+        accruals = Accruals(BasicSalary = 2500000,
+        WorkedDays = 5,
+        HolidayTimeWorked = 0,
+        ExtraDaylightHoursWorked = 0,
+        ExtraNightHoursWorked = 0,
+        HolidayExtraDaylightHoursWorked = 0,
+        HolidayExtraNightHoursWorked = 0, DaysOfDisability = 0,
+        LeaveDays = 25)
+
+        deductions = Deductions(accruals, HealthInsurancePercentage = 4,
+        PensionContributionPercentage = 4,
+        PensionSolidarityFundContributionPercentage = 2)
+        salary_calculator = SalaryCalculator(accruals, deductions)
+
+        Result = salary_calculator.calculate_net_salary()
+        self.assertEqual(round(Result, 1), 2395800)
 
     """Unit test of the CalculateValueOfHolidaysWorked method:
     6th exceptional unit test in the case of a high number of holidays worked"""
