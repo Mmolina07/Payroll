@@ -1,9 +1,3 @@
-"""The following functions calculate the accruals, which are all the items for which an employee receives remuneration."""
-
-"""Personalized exception management"""
-class IllegalParameters(Exception):
-    pass
-
 class Employee:
 
     def __init__(self, Name, Id, accruals):
@@ -11,7 +5,7 @@ class Employee:
         self.Id = Id
         self.accruals = accruals
 
-
+"""Accruals are all the items for which an employee receives remuneration."""
 class Accruals:
     
     def __init__(self, BasicSalary, WorkedDays, HolidayTimeWorked, ExtraDaylightHoursWorked,
@@ -28,6 +22,7 @@ class Accruals:
         self.DaysOfDisability = DaysOfDisability
         self.LeaveDays = LeaveDays 
 
+    """This function calculates the employee's daily salary"""
     def CalculateDailySalary(self):
 
         Monthly = 30
@@ -40,16 +35,17 @@ class Accruals:
 
         return DailySalary
     
+    """This function calculates the employee's total salary based on days worked."""
     def CalculateTotalSalary(self):
         DailySalary = self.CalculateDailySalary()
 
-        TwoCurrentLegalMinimumSalaries = 2600000
-
-        TransportSubsidyValue = 162000
+        TwoLegalMinimumSalaries = 2600000
         
+        TransportSubsidyValue = 162000
+
         TotalSalary = DailySalary * self.WorkedDays
 
-        if self.BasicSalary <= TwoCurrentLegalMinimumSalaries:
+        if self.BasicSalary <= TwoLegalMinimumSalaries:
             TotalSalary += TransportSubsidyValue
         
         else:
@@ -57,6 +53,16 @@ class Accruals:
 
         return TotalSalary
     
+    """This function evaluates whether the base salary applies to the transportation subsidy"""
+    def CalculateSubsidyTransport(self):
+        TwoLegalMinimumSalaries = 2600000
+
+        if self.BasicSalary <= TwoLegalMinimumSalaries:
+            return "Your base salary applies for the transportation subsidy which is 162,000"
+        else:
+            return "Your base salary does not apply to the transportation subsidy"
+
+    """This function calculates the surcharge value of a worked holiday."""
     def CalculateValueOfHolidaysWorked(self, DailySalary):
         """The surcharge for holiday hours worked according to the law is 75%."""
         HolidaySurchargePercentage = 0.75
@@ -64,6 +70,7 @@ class Accruals:
         HolidayRecharge = (DailySalary * HolidaySurchargePercentage) * self.holidaytimeworked
         return HolidayRecharge
 
+    """This function calculates the surcharge value of daylight extra hours worked."""
     def CalculateDaylightExtraHoursCharge(self):
         """The value for a daylight hour worked according to the law is 6915COP."""
         DaylightHourSurcharge = 6915
@@ -71,14 +78,15 @@ class Accruals:
         DaylightSurchargeValue = DaylightHourSurcharge * self.ExtraDaylighthoursworked
         return DaylightSurchargeValue
 
-    def CalculateExtraNigthHoursCharge(self):
+    """This function calculates the surcharge value of night extra hours worked."""
+    def CalculateExtraNightHoursCharge(self):
         """The surcharge for night hours worked according to the law is 9681COP."""
         NightHourSurcharge = 9681
 
         NightSurchargeValue = NightHourSurcharge * self.ExtraNightHoursWorked
         return NightSurchargeValue
     
-    """This function calculates the value of daylight extra hours on worked holidays using the value established by law."""
+    """This function calculates the value of daylight extra hours on worked holidays."""
     def CalculateHolidayExtraDaylightHoursWorkedValue(self):
 
         """The surcharge for a holiday extra daylight hour worked according to the law is 11064COP."""
@@ -87,7 +95,7 @@ class Accruals:
         
         return HolidayExtraDaylightHoursWorkedSurchargeValue
 
-    """This function calculates the value of night extra hours on worked holidays using the value established by law."""
+    """This function calculates the value of night extra hours on worked holidays."""
     def CalculateHolidayExtraNightHoursWorkedValue(self):
 
         """The surcharge for a holiday extra night hour worked according to the law is 13830COP."""
@@ -96,14 +104,20 @@ class Accruals:
         
         return HolidayExtraNightHoursWorkedSurchargeValue
     
+    """This function calculates the value to be paid according to the days of disability."""
     def CalculateDisabilityTimeValue(self):
+
+        """The surcharge of 0.6666 must be made to the daily salary per day of disability if these are in the range of 1 to 90 days."""
+        Percentage1to90Days = 0.6666
+        """The surcharge of 0.5 must be made to the daily salary per day of disability if these are in the range of 90 to 540 days."""
+        Percentage90to540Days = 0.5
+         
         if self.DaysOfDisability >= 1 and self.DaysOfDisability <= 90: 
-            DaysOfDisabilityValue = 0.6666 * self.CalculateDailySalary()
+            DaysOfDisabilityValue = Percentage1to90Days * self.CalculateDailySalary()
             TotalDisabilityValue = DaysOfDisabilityValue * self.DaysOfDisability
-            print("check1", TotalDisabilityValue)
 
         elif self.DaysOfDisability > 90 and self.DaysOfDisability <= 540:
-            DaysOfDisabilityValue = 0.5 * self.CalculateDailySalary()
+            DaysOfDisabilityValue = Percentage90to540Days * self.CalculateDailySalary()
             TotalDisabilityValue = DaysOfDisabilityValue * self.DaysOfDisability
 
         else:
@@ -111,17 +125,39 @@ class Accruals:
 
         return TotalDisabilityValue
     
+    """This function calculates the value to be paid according to the days of leave."""
     def CalculateLeaveDaysValue(self):
         DailySalary = self.CalculateDailySalary()
-        LeaveDaysValue = DailySalary * self.LeaveDays
+
+        """The number of days for maternity leave is 126."""
+        DaysOfMaternityLeave = 126
+        """The number of days for paternity leave is 14."""
+        DaysOfPaternityLeave = 14
+        """The number of days per bereavement leave is 5."""
+        DaysOfBereavementLeave = 5
+        """The number of days per leave for the care of minor children is 10."""
+        DaysOfCareForMinorChildrenLeave = 10
+
+        if self.LeaveDays == 1:
+            LeaveDaysValue = DailySalary * DaysOfMaternityLeave
+        elif self.LeaveDays == 2:
+            LeaveDaysValue = DailySalary * DaysOfPaternityLeave
+        elif self.LeaveDays == 3:
+            LeaveDaysValue = DailySalary * DaysOfBereavementLeave
+        elif self.LeaveDays == 4:
+            LeaveDaysValue = DailySalary * DaysOfCareForMinorChildrenLeave
+        elif self.LeaveDays == 5:
+            LeaveDaysValue = 0
+
         return LeaveDaysValue
     
+    """This function calculates the total of accruals by adding the calculated value of each one above"""
     def calculate_total_accruals(self):
         total_accruals = 0
         total_accruals += self.CalculateTotalSalary()
         total_accruals += self.CalculateValueOfHolidaysWorked(self.CalculateDailySalary())
         total_accruals += self.CalculateDaylightExtraHoursCharge()
-        total_accruals += self.CalculateExtraNigthHoursCharge()
+        total_accruals += self.CalculateExtraNightHoursCharge()
         total_accruals += self.CalculateHolidayExtraDaylightHoursWorkedValue()
         total_accruals += self.CalculateHolidayExtraNightHoursWorkedValue()
         total_accruals += self.CalculateDisabilityTimeValue()
@@ -129,7 +165,7 @@ class Accruals:
 
         return total_accruals
 
- 
+"""Deductions are the discounts that are made at the time of paying the salary to the employees."""
 class Deductions:
 
     def __init__(self, accruals, HealthInsurancePercentage, PensionContributionPercentage,
@@ -140,22 +176,25 @@ class Deductions:
         self.PensionContributionPercentage = PensionContributionPercentage
         self.PensionSolidarityFundContributionPercentage = PensionSolidarityFundContributionPercentage
 
+    """This function calculates the employee's health contribution percentage to be discounted."""
     def CalculateHealthInsurance(self):
         total_accruals = self.accruals.calculate_total_accruals()
         HealthInsuranceValue = total_accruals * (self.HealthInsurancePercentage/100)
         return HealthInsuranceValue
 
+    """This function calculates the pension contribution percentage to be discounted."""
     def CalculatePensionContribution(self):
         total_accruals = self.accruals.calculate_total_accruals()
         PensionContributionValue = total_accruals* (self.PensionContributionPercentage/100)
         return PensionContributionValue
     
+    """This function calculates the contribution percentage to the pension solidarity fund to be discounted."""
     def CalculatePensionSolidarityFundContribution(self):
         total_accruals = self.accruals.calculate_total_accruals()
         PensionSolidarityFundContributionValue = total_accruals * (self.PensionSolidarityFundContributionPercentage/100)
         return PensionSolidarityFundContributionValue
     
-        
+    """This function calculates the witholding tax percentage to be discounted."""
     def CalculateWithholdingTax(self):
         """The value of the current taxable value unit is 47065 according to the law."""
         ActualTaxableValueUnit = 47065   
@@ -215,14 +254,14 @@ class Deductions:
             WithholdingTax = (TaxBase - RangeTaxableValueUnit6) * WithholdingPercentage + TaxValueUnitinRange
         
         else:
-            """There is not withholding whenever the salary is under the limit"""
             WithholdingTax = 0
 
-        """We convert the withholding to pesos"""
+        """Withholding tax is converted to pesos"""
         WithholdingCOP = WithholdingTax * ActualTaxableValueUnit
 
         return WithholdingCOP
     
+    """This function calculates the total of deductions by adding the calculated value of each one above"""
     def calculate_total_deductions(self):
         total_deductions = 0
         total_deductions += self.CalculateHealthInsurance()
@@ -231,13 +270,17 @@ class Deductions:
         total_deductions += self.CalculateWithholdingTax()
         return total_deductions
 
-
 class SalaryCalculator:
 
     def __init__(self, accruals, deductions):
         self.accruals = accruals
         self.deductions = deductions
 
+    def __str__(self):
+        net_salary = self.calculate_net_salary()
+        return f"{net_salary}"
+
+    """This function calculates the total payment by subtracting the total deductions from the total accruals."""
     def calculate_net_salary(self):
         total_accruals = self.accruals.calculate_total_accruals()
         total_deductions = self.deductions.calculate_total_deductions()
@@ -246,81 +289,63 @@ class SalaryCalculator:
 
         return net_salary
 
+class NegativeSalary(Exception):
+    pass
 
-    """This function evaluates an error case where the basic salary cannot be zero if worked days are different from zero."""
-    def VerifyBasicSalaryDifferentFromZero(BasicSalary, WorkedDays):
+def VerifyNegativeSalary(BasicSalary):
+    """This function evaluates an error case where basic salary is negative."""
+    if BasicSalary < 0:
+        raise NegativeSalary("The basic salary cannot be negative.")
 
-        if BasicSalary == 0 and WorkedDays != 0:
-            raise IllegalParameters( "The basic salary cannot be zero if the days worked are different from zero." )
+class IllegalParameters(Exception):
+    pass
 
-    """This function evaluates an error case where the parameter entered as basic salary is negative."""
-    def VerifyNegativeSalary(BasicSalary):
+def VerifyNegativeWorkedDays(WorkedDays):
+    """This function evaluates an error case where worked days are negative."""
+    if WorkedDays < 0:
+        raise IllegalParameters("The number of worked days cannot be negative.")
+    
+def VerifyNonZeroWorkedDays(WorkedDays):
+    """This function evaluates an error case where worked days are equal to zero."""
+    if WorkedDays == 0:
+        raise IllegalParameters("The number of worked days cannot be zero.")
+
+def VerifyNegativeDisabilityDays(DaysOfDisability):
+    """This function evaluates an error case where the number of disability days is negative"""
+    if DaysOfDisability < 0:
+        raise IllegalParameters("The number of disability days cannot be negative.")
+    
+class DataTypeError(Exception):
+    pass
+
+def VerifyBasicSalaryDataTypeError(**kwargs):
+    """This function verifies that BasicSalary value is numeric."""
+    for key, value in kwargs.items():
+        if key == 'BasicSalary':
+            if isinstance(value, str):
+                raise DataTypeError("BasicSalary must be a number, not a string.")
+        elif not isinstance(value, (int, float)):
+            raise DataTypeError("All input values must be numbers.")
         
-        if BasicSalary < 0:
-            raise IllegalParameters( "The basic salary cannot be negative." )
+def VerifyWorkedDaysDataTypeError(**kwargs):
+    """This function verifies that WorkedDays value is numeric."""
+    for key, value in kwargs.items():
+        if key == 'WorkedDays':
+            if isinstance(value, str):
+                raise DataTypeError("WorkedDays must be a number, not a string.")
+        elif not isinstance(value, (int, float)):
+            raise DataTypeError("All input values must be numbers.")
         
-    """This function evaluates an error case where the parameter entered as WorkedDays is negative."""
-    def VerifyWorkedDaysParameter1(WorkedDays):
-        
-        if WorkedDays < 0:
-            raise IllegalParameters("The time worked cannot be a negative number.")
+class DataSizeLimitExceeded(Exception):
+    pass
 
-    """This function evaluates an error case where the parameter entered as WorkedDays is zero."""
-    def VerifyWorkedDaysParameter2(WorkedDays):
-        if WorkedDays == 0 :
-            raise IllegalParameters("Division by zero cannot be calculated.")
+def VerifyLimitOfExtraDaylightHoursWorked(ExtraDaylightHoursWorked):
+    """This function verifies that the number of extra daylight hours worked doesn't exceed 60."""
+    if ExtraDaylightHoursWorked > 60:
+        raise DataSizeLimitExceeded("The number of extra daylight hours worked cannot exceed 60.")
+    
+def VerifyLimitOfExtraNightHoursWorked(ExtraDayNightHoursWorked):
+    """This function verifies that the number of extra night hours worked doesn't exceed 60."""
+    if ExtraDayNightHoursWorked > 60:
+        raise DataSizeLimitExceeded("The number of extra daylight hours worked cannot exceed 60.")
 
-    """This function evaluates an error case where the parameter entered as TransportSubsidy is negative."""
-    def VerifyTransportSubsidy(TransportSubsidy):
-        if TransportSubsidy < 0:
-            raise IllegalParameters("The transportation subsidy cannot be negative.")
-        
-
-    """This function evaluates an error case when extra hours exceeds 50 hours per month."""
-    def VerifyMaximumOfExtraHours(HolidayExtraNightHoursWorked):
-        
-        """Only 50 hours of overtime that can be worked per month will be paid according to the law."""
-        MaximumOfExtraHours = 50
-        if HolidayExtraNightHoursWorked <= MaximumOfExtraHours:
-            raise IllegalParameters("No more than 50 hours of overtime per month may be paid.")
-
-
-    """This function evaluates an error case where an employee earning less than 5848000 contributes more than 4% to health."""
-    def VerifyHealthInsurancePercentage(BasicSalary, HealthInsurancePercentage):
-        """People earning less than 4 legal minimum salaries cannot contribute more than 4% to health"""
-        MaximumSalaryToContribute4 = 5848000
-        if BasicSalary < MaximumSalaryToContribute4 and HealthInsurancePercentage > 4:
-            raise IllegalParameters("The health contribution cannot exceed 4 percentage for people earning less than 5848000")
-
-
-accruals = Accruals(BasicSalary=1500000, WorkedDays=10, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                    ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0,
-                    HolidayExtraNightHoursWorked=0,  
-                    DaysOfDisability=20, LeaveDays=0)
-
-# Crear una instancia de la clase Deductions
-deductions = Deductions(accruals, HealthInsurancePercentage=4, PensionContributionPercentage=4, 
-                        PensionSolidarityFundContributionPercentage=4)
-
-
-# Crear una instancia de la clase SalaryCalculator
-calculator = SalaryCalculator(accruals, deductions)
-
-# Imprimir los resultados
-print("Salario diario:", accruals.CalculateDailySalary())
-print("Salario total:", accruals.CalculateTotalSalary())
-print("Valor de días festivos trabajados:", accruals.CalculateValueOfHolidaysWorked(accruals.CalculateDailySalary()))
-print("Valor de horas extra diurnas:", accruals.CalculateDaylightExtraHoursCharge())
-print("Valor de horas extra nocturnas:", accruals.CalculateExtraNigthHoursCharge())
-print("Valor de horas extra diurnas en días festivos:", accruals.CalculateHolidayExtraDaylightHoursWorkedValue())
-print("Valor de horas extra nocturnas en días festivos:", accruals.CalculateHolidayExtraNightHoursWorkedValue())
-print("Valor del tiempo de incapacidad:", accruals.CalculateDisabilityTimeValue())
-print("Valor de los días de licencia:", accruals.CalculateLeaveDaysValue())
-
-print("retencion", deductions.CalculateWithholdingTax())
-print("Seguro de salud:", deductions.CalculateHealthInsurance())
-print("Contribución a la pensión:", deductions.CalculatePensionContribution())
-print("Contribución al Fondo de Solidaridad Pensional:", deductions.CalculatePensionSolidarityFundContribution())
-
-
-print("Salario neto:", calculator.calculate_net_salary())

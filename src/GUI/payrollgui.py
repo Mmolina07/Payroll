@@ -254,12 +254,18 @@ class GUIPayrollApp(App):
             return
 
         
+        accruals = Accruals(salary, workeddays, holidaytimeworked, extralighthoursworked, extranighthoursworked,
+                            extraholidaylighthours, extraholidaynighthours, disabilitydays, leavedays)
+
+
+        deductions = Deductions(accruals, healthinsurance, pensioncontribution, solidarity)
+
         """If all the values ​​are valid, then proceed with the calculations"""
-        withhold = CalculateWithholdingTax(salary)
-        result = CalculatePayrollPaymentCallingAllFunctions(salary, workeddays,holidaytimeworked, extralighthoursworked,
-                                                            extranighthoursworked, extraholidaylighthours, extraholidaynighthours, healthinsurance,
-                                                            pensioncontribution, solidarity, disabilitydays, leavedays, withhold)
-        self.result.text = str(result)
+        Withhold = deductions.CalculateWithholdingTax()
+        salary_calculator = SalaryCalculator(accruals, deductions)
+        
+
+        self.result.text = str(salary_calculator)
 
     
         """Applying bold and italic to the text of the results"""
@@ -276,8 +282,8 @@ class GUIPayrollApp(App):
         The value of the solidarity fund contribution is:  [i][b]{solidarity}[/b][/i]
         The value of the disability days is:  [i][b]{disabilitydays}[/b][/i]
         The value of leave days is:  [i][b]{leavedays}[/b][/i]
-        The value of the withholding tax for [i][b]${salary}:[/b][/i] is [i][b]${withhold}[/b][/i]
-        The total value to be paid is:  [i][b]{result}[/b][/i]
+        The value of the withholding tax for [i][b]${salary}:[/b][/i] is [i][b]${Withhold}[/b][/i]
+        The total value to be paid is:  [i][b]{salary_calculator}[/b][/i]
         """
         popup = ResultPopup(output)
         popup.open()

@@ -1,31 +1,30 @@
-"""unittest module is imported, which is the standard Python unit testing framework."""
 import unittest
 
 import sys
 sys.path.append("src")
 
-"""Payroll_Logic module is imported, which contains the program logic."""
 import logic.Payroll_Logic as Payroll_Logic
 from logic.Payroll_Logic import *
 
-
-
-
-"""A new class called PayrollTests is created, which inherits from unittest.TestCase."""
 class PayrollTests(unittest.TestCase):
 
-    """Unit test of the CalculateDailySalary method:
-    1st normal unit test to verify that Calculate daily salary method works correctly"""
+    """1st normal unit test to verify that CalculateDailySalary method works correctly"""
     def testCalculateDailySalary1(self):
-        BasicSalary = 2000000
-        WorkedDays = 30
-        accruals = Accruals(BasicSalary, WorkedDays, 0, 0, 0, 0, 0, 0, 0)
+        accruals = Accruals(BasicSalary = 2000000, 
+        WorkedDays = 30, 
+        HolidayTimeWorked = 0, 
+        ExtraDaylightHoursWorked = 0, 
+        ExtraNightHoursWorked = 0, 
+        HolidayExtraDaylightHoursWorked = 0, 
+        HolidayExtraNightHoursWorked = 0, 
+        DaysOfDisability = 0, 
+        LeaveDays = 5)
+
         Result = accruals.CalculateDailySalary()
         self.assertEqual(round(Result,1), 66666.7)
 
-    """Unit test of the CalculatePayrollPayment01 method:
-    2nd normal unit test to verify that Calculate payroll method works correctly"""
-    def testCalculatePayrollPayment01(self):
+    """2nd normal unit test to verify that calculate_net_salary works correctly"""
+    def testcalculate_net_salary(self):
 
         accruals = Accruals(BasicSalary = 8000000,
         WorkedDays = 30,
@@ -33,151 +32,181 @@ class PayrollTests(unittest.TestCase):
         ExtraDaylightHoursWorked = 1,
         ExtraNightHoursWorked = 0,
         HolidayExtraDaylightHoursWorked = 0,
-        HolidayExtraNightHoursWorked = 0,DaysOfDisability = 0,
-        LeaveDays = 0,)
+        HolidayExtraNightHoursWorked = 0,
+        DaysOfDisability = 0,
+        LeaveDays = 1)
 
         deductions = Deductions(accruals, HealthInsurancePercentage = 4,
         PensionContributionPercentage = 4,
-        PensionSolidarityFundContributionPercentage = 4)
+        PensionSolidarityFundContributionPercentage = 2)
 
         salary_calculator = SalaryCalculator(accruals, deductions)
 
         Result = salary_calculator.calculate_net_salary() 
-        self.assertEqual(round(Result, 1), 6488165.2)
+        self.assertEqual(round(Result, 1), 36892303.5)
 
-    """Unit test of the HealthInsurance method:
-    3rd normal unit test to verify that HealthInsurance method works correctly"""
+    """3rd normal unit test to verify that HealthInsurance method works correctly"""
     def testCalculateHealthInsurance(self):
-        BasicSalary = 7500000
-        HealthInsurancePercentage = 4
 
-        accruals = Accruals(BasicSalary, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=0, LeaveDays=0)
+        accruals = Accruals(BasicSalary = 7500000,
+        WorkedDays=30, 
+        HolidayTimeWorked=0, 
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0, 
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0, 
+        DaysOfDisability=0, 
+        LeaveDays=5)
 
-
-        deductions = Deductions(accruals, HealthInsurancePercentage, PensionContributionPercentage=0,
-                                PensionSolidarityFundContributionPercentage=0)
-
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage = 4, 
+        PensionContributionPercentage=0,
+        PensionSolidarityFundContributionPercentage=0)
     
         Result = deductions.CalculateHealthInsurance()
-
         self.assertEqual(Result, 300000)
 
-    """Unit test of the CalculatePensionContribution method:
-    4th normal unit test to verify that CalculatePensionContribution method works correctly"""
+    """4th normal unit test to verify that CalculatePensionContribution method works correctly"""
     def testCalculatePensionContribution(self):
-        BasicSalary = 7500000
 
-        accruals = Accruals(BasicSalary, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=0, LeaveDays=0)
+        accruals = Accruals(BasicSalary = 7500000, 
+        WorkedDays=30, 
+        HolidayTimeWorked=0, 
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0, 
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0, 
+        DaysOfDisability=0, 
+        LeaveDays=5)
 
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage=0,
+        PensionContributionPercentage=4,
+        PensionSolidarityFundContributionPercentage=0)
 
-        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=4,
-                                PensionSolidarityFundContributionPercentage=0)
-
-    
         Result = deductions.CalculatePensionContribution()
-
         self.assertEqual(Result, 300000)
 
-    """Unit test of the CalculatePensionSolidarityFundContribution method:
-    5th normal unit test to verify that CalculatePensionSolidarityFundContribution method works correctly"""
+    """5th normal unit test to verify that CalculatePensionSolidarityFundContribution method works correctly"""
     def testCalculatePensionSolidarityFundContribution(self):
-        BasicSalary = 5000000 
-        accruals = Accruals(BasicSalary, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=0, LeaveDays=0)
+        
+        accruals = Accruals(BasicSalary = 5000000, 
+        WorkedDays=30, 
+        HolidayTimeWorked=0, 
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0, 
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0,
+        DaysOfDisability=0, LeaveDays=5)
 
-        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=0,
-                                PensionSolidarityFundContributionPercentage=2)
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage=0, 
+        PensionContributionPercentage=0,
+        PensionSolidarityFundContributionPercentage=2)
 
         Result = deductions.CalculatePensionSolidarityFundContribution()
-
         self.assertEqual(Result, 100000)
 
-    """Unit test of the CalculateDisabilityTimeValue method:
-    6th normal unit test to verify that CalculateDisabilityTimeValue method works correctly"""
+    """6th normal unit test to verify that CalculateDisabilityTimeValue method works correctly"""
     def testCalculateDisabilityTimeValue1(self):
-        accruals = Accruals(BasicSalary=7000000, WorkedDays=30,
-                            HolidayTimeWorked=0,
-                            ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0,
-                            HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=2, LeaveDays=0)
-
-        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=0,
-                                PensionSolidarityFundContributionPercentage=0)
-        resultado = accruals.CalculateDisabilityTimeValue()
-
-        self.assertEqual(round(resultado,1), 311080.0)
-
-    """Unit test of the CalculateDisabilityTimeValue method:
-    7th normal unit test to verify the calculation of disability value greater than 90 and less than 540 days."""
-    def testCalculateDisabilityTimeValue2(self):
-        
-        accruals = Accruals(BasicSalary=700000, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0, ExtraNightHoursWorked=0,
-                            HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=180, LeaveDays=0)
-
-        deductions = Deductions(accruals, HealthInsurancePercentage=0, PensionContributionPercentage=0,
-                                PensionSolidarityFundContributionPercentage=0)
+        accruals = Accruals(BasicSalary=7000000, 
+        WorkedDays=30,
+        HolidayTimeWorked=0,
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0,
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0, 
+        DaysOfDisability=2, 
+        LeaveDays=0)
 
         Result = accruals.CalculateDisabilityTimeValue()
+        self.assertEqual(round(Result,1), 311080.0)
 
+    """7th normal unit test to verify the calculation of disability value greater than 90 and less than 540 days."""
+    def testCalculateDisabilityTimeValue2(self):
+        
+        accruals = Accruals(BasicSalary=700000, 
+        WorkedDays=30, 
+        HolidayTimeWorked=0, 
+        ExtraDaylightHoursWorked=0, 
+        ExtraNightHoursWorked=0,
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0,
+        DaysOfDisability=180, 
+        LeaveDays=0)
+
+        Result = accruals.CalculateDisabilityTimeValue()
         self.assertEqual(round(Result,1), 2100000.0)
 
-
-    """Unit test of the CalculatePayrollPayment method:
-    1st exceptional unit test in the case that a person with a high salary also has high deductions"""
+    """1st exceptional unit test in the case that a person with a high salary also has high deductions"""
     def testCalculatePayrollPayment1(self):
 
-        accruals = Accruals(BasicSalary=20000000, WorkedDays=30, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=0, LeaveDays=0)
+        accruals = Accruals(BasicSalary=20000000, 
+        WorkedDays=30, 
+        HolidayTimeWorked=0,
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0, 
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0, 
+        DaysOfDisability=0, 
+        LeaveDays=5)
 
-        deductions = Deductions(accruals, HealthInsurancePercentage=7, PensionContributionPercentage=8,
-                                PensionSolidarityFundContributionPercentage=3)
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage= 7, 
+        PensionContributionPercentage= 8,
+        PensionSolidarityFundContributionPercentage= 3)
       
         salary_calculator = SalaryCalculator(accruals, deductions)
 
         Result = salary_calculator.calculate_net_salary()
         self.assertEqual(round(Result, 1), 12143837.0)
 
-    """Unit test of the CalculatePayrollPayment method:
-    2nd exceptional unit test in the case of a high number of days of disability"""
+    """2nd exceptional unit test in the case of a high number of days of disability"""
     def testCalculatePayrollPayment2(self):
 
-        accruals = Accruals(BasicSalary=1500000, WorkedDays=10, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=20, LeaveDays=0)
+        accruals = Accruals(BasicSalary=1500000, 
+        WorkedDays=10, 
+        HolidayTimeWorked=0, 
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0, 
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0, 
+        DaysOfDisability=20, 
+        LeaveDays=5)
 
-        deductions = Deductions(accruals, HealthInsurancePercentage=4, PensionContributionPercentage=4,
-                                PensionSolidarityFundContributionPercentage=4)
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage=4, 
+        PensionContributionPercentage=4,
+        PensionSolidarityFundContributionPercentage=4)
         
         salary_calculator = SalaryCalculator(accruals, deductions)
          
         Result = salary_calculator.calculate_net_salary()
         self.assertEqual(round(Result,1), 1169168)
 
-    """Unit test of the CalculatePayrollPayment method:
-    3rd exceptional unit test in the case of a person who started working in the middle of the month"""
+    """3rd exceptional unit test in the case of a person who started working in the middle of the month"""
     def testCalculatePayrollPayment3(self):
-        accruals = Accruals(BasicSalary=4000000, WorkedDays=15, HolidayTimeWorked=0, ExtraDaylightHoursWorked=0,
-                            ExtraNightHoursWorked=0, HolidayExtraDaylightHoursWorked=0, HolidayExtraNightHoursWorked=0
-                            , DaysOfDisability=0, LeaveDays=0)
+        accruals = Accruals(BasicSalary=4000000, 
+        WorkedDays=15, 
+        HolidayTimeWorked=0, 
+        ExtraDaylightHoursWorked=0,
+        ExtraNightHoursWorked=0, 
+        HolidayExtraDaylightHoursWorked=0, 
+        HolidayExtraNightHoursWorked=0,
+        DaysOfDisability=0, 
+        LeaveDays=5)
 
-        deductions = Deductions(accruals, HealthInsurancePercentage=4, PensionContributionPercentage=4,
-                                PensionSolidarityFundContributionPercentage=4)
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage=4, 
+        PensionContributionPercentage=4,
+        PensionSolidarityFundContributionPercentage=4)
         
         salary_calculator = SalaryCalculator(accruals, deductions)
          
         Result = salary_calculator.calculate_net_salary()
         self.assertEqual(round(Result, 1), 1760000)
 
-    """Unit test of the TestCalculatePayrollPayment method:
-    4th exceptional unit test in the case of a person worked a lot of extra hours"""
+    """4th exceptional unit test in the case of a person worked a lot of extra hours"""
     def testCalculatePayrollPayment4(self):
 
         accruals = Accruals(BasicSalary = 6000000,
@@ -188,7 +217,7 @@ class PayrollTests(unittest.TestCase):
         HolidayExtraDaylightHoursWorked = 5,
         HolidayExtraNightHoursWorked = 5,
         DaysOfDisability = 0,
-        LeaveDays = 0)
+        LeaveDays = 5)
 
         deductions = Deductions(accruals, HealthInsurancePercentage = 4,
         PensionContributionPercentage = 4,
@@ -199,8 +228,7 @@ class PayrollTests(unittest.TestCase):
         Result = salary_calculator.calculate_net_salary() 
         self.assertEqual(round(Result, 1 ), 5180598.5)
 
-    """Unit test of the CalculatePayrollPayment method:
-    5th exceptional unit test in the case of a high number of leave days"""
+    """5th exceptional unit test in the case of a high number of leave days"""
     def testCalculatePayrollPayment5(self):
     
         accruals = Accruals(BasicSalary = 2500000,
@@ -209,103 +237,192 @@ class PayrollTests(unittest.TestCase):
         ExtraDaylightHoursWorked = 0,
         ExtraNightHoursWorked = 0,
         HolidayExtraDaylightHoursWorked = 0,
-        HolidayExtraNightHoursWorked = 0, DaysOfDisability = 0,
-        LeaveDays = 25)
+        HolidayExtraNightHoursWorked = 0, 
+        DaysOfDisability = 0,
+        LeaveDays = 1)
 
-        deductions = Deductions(accruals, HealthInsurancePercentage = 4,
+        deductions = Deductions(accruals, 
+        HealthInsurancePercentage = 4,
         PensionContributionPercentage = 4,
         PensionSolidarityFundContributionPercentage = 2)
+
         salary_calculator = SalaryCalculator(accruals, deductions)
 
         Result = salary_calculator.calculate_net_salary()
-        self.assertEqual(round(Result, 1), 2395800)
+        self.assertEqual(round(Result, 1), 9970800.0)
 
-    """Unit test of the CalculateValueOfHolidaysWorked method:
-    6th exceptional unit test in the case of a high number of holidays worked"""
-    def testCalculateValueOfHolidaysWorked(self):
-        DailySalary = 70000
-        HolidayTimeWorked = 5
-        Result = Payroll_Logic.CalculateValueOfHolidaysWorked(DailySalary, HolidayTimeWorked)
-        self.assertEqual(Result, 262500)
+    """6th exceptional unit test in the case of a high number of holidays worked"""
+    def testCalculatePayrollPayment6(self):
 
-    """Unit test of the CalculatePayrollPayment method:
-    7th exceptional unit test in the case of a person has minimum deductions"""
-    def CalculatePayrollPayment6(self):
-        BasicSalary = 800000
-        TransportSubsidy = 0
-        WorkedDays = 30
-        HolidayTimeWorked = 0
-        ExtraDaylightHoursWorked = 0
-        ExtraNightHoursWorked = 0
-        HolidayExtraDaylightHoursWorked = 0
-        HolidayExtraNightHoursWorked = 0
-        HealthInsurancePercentage = 2
-        PensionContributionPercentage = 2
-        PensionSolidarityFundContributionPercentage = 2
-        DaysOfDisability = 0
-        LeaveDays = 0
-        Withholding = 733920.00
-        Result = Payroll_Logic.CalculatePayrollPaymentCallingAllFunctions(BasicSalary, TransportSubsidy, WorkedDays, 
-        HolidayTimeWorked, ExtraDaylightHoursWorked, ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked, 
-        HolidayExtraNightHoursWorked, HealthInsurancePercentage, PensionContributionPercentage, 
-        PensionSolidarityFundContributionPercentage, DaysOfDisability, LeaveDays, Withholding)
-        self.assertEqual(round(Result, 1), 6786080)
+        accruals = Accruals(BasicSalary = 5000000,
+        WorkedDays = 17,
+        HolidayTimeWorked = 3,
+        ExtraDaylightHoursWorked = 0,
+        ExtraNightHoursWorked = 0,
+        HolidayExtraDaylightHoursWorked = 7,
+        HolidayExtraNightHoursWorked = 6,
+        DaysOfDisability = 0,
+        LeaveDays = 5)
 
-    """Unit test of the VerifyTransportSubsidy method:
-    1st error unit test in the case of a negative subsidy transport parameter"""
-    def testVerifyTransportSubsidy(self):
-        BasicSalary = 3000000
-        TransportSubsidy = -5
-        self.assertRaises(Payroll_Logic.IllegalParameters, Payroll_Logic.VerifyTransportSubsidy,TransportSubsidy)
+        deductions = Deductions(accruals, HealthInsurancePercentage = 4,
+        PensionContributionPercentage = 4,
+        PensionSolidarityFundContributionPercentage = 4)
 
-    """Unit test of the CalculateLeaveDaysValue method:
-    2nd error unit test in the case of a negative Leave Days parameter"""
-    def CalculateLeaveDaysValue(self):
-        DailySalary = 70000
-        LeaveDays = -5
-        self.assertRaises(Payroll_Logic.IllegalParameters, Payroll_Logic.CalculateLeaveDaysValue, DailySalary, LeaveDays)
+        salary_calculator = SalaryCalculator(accruals, deductions)
 
-    """Unit test of the VerifyNegativeSalary method:
-    3rd error unit test in the case of a negative salary parameter"""
-    def testVerifyNegativeSalary(self):
-        BasicSalary = -1000000
-        WorkedDays = 15
-        self.assertRaises( Payroll_Logic.IllegalParameters,  Payroll_Logic.VerifyNegativeSalary, BasicSalary)
+        Result = salary_calculator.calculate_net_salary() 
+        self.assertEqual(round(Result, 1 ), 2864033.2)
 
-    """Unit test of the VerifyWorkedDaysParameter1 method:
-    4th error unit test in the case of a negative worked days parameter"""
-    def testVerifyWorkedDaysParameter1(self):
-        BasicSalary = 3000000
-        WorkedDays = -15
-        self.assertRaises( Payroll_Logic.IllegalParameters,  Payroll_Logic.VerifyWorkedDaysParameter1, WorkedDays)
-
-    """Unit test of the VerifyWorkedDaysParameter2 method:
-    5th error unit test in the case of zero worked days parameter due to division by zero isn't defined"""
-    def testVerifyWorkedDaysParameter2(self):
-        BasicSalary = 3000000
-        WorkedDays = 0
-        self.assertRaises(Payroll_Logic.IllegalParameters, Payroll_Logic.VerifyWorkedDaysParameter2, WorkedDays)
-    
-    """Unit test of the VerifyBasicSalaryDifferentFromZero method:
-    6th error unit test in the case of a basic salary is equal to zero"""
-    def testVerifyBasicSalaryDifferentFromZero(self):
-        BasicSalary = 0
-        WorkedDays = 15
-        self.assertRaises(Payroll_Logic.IllegalParameters, Payroll_Logic.VerifyBasicSalaryDifferentFromZero, BasicSalary, WorkedDays)
+    """7th exceptional unit test in the case of a person has minimum deductions"""
+    def testCalculatePayrollPayment7(self):
         
-    """Unit test of the VerifyMaximumOfExtraHours method:
-    7th error unit test in the case of a person worked more than 50 extra hours, which is not allowed."""
-    def testVerifyMaximumOfExtraHours(self):
+        accruals = Accruals(BasicSalary = 800000,
+        WorkedDays = 30,
+        HolidayTimeWorked = 0,
+        ExtraDaylightHoursWorked = 0,
+        ExtraNightHoursWorked = 0,
+        HolidayExtraDaylightHoursWorked = 0,
+        HolidayExtraNightHoursWorked = 0,
+        DaysOfDisability = 0,
+        LeaveDays = 5)
 
-        ExtraDaylightHoursWorked = 0
-        self.assertRaises(Payroll_Logic.IllegalParameters, Payroll_Logic.VerifyMaximumOfExtraHours, ExtraDaylightHoursWorked)
-        
-    """Unit test of the VerifyHealthInsurancePercentage method:
-    8th error unit test in the case of a person whose salary is less than 4 SMLV has a health insurance of more than 4%."""
-    def testVerifyHealthInsurancePercentage(self):
-        BasicSalary = 2500000
-        HealthInsurancePercentage = 8
-        self.assertRaises(Payroll_Logic.IllegalParameters, Payroll_Logic.VerifyHealthInsurancePercentage, BasicSalary, HealthInsurancePercentage)
+        deductions = Deductions(accruals, HealthInsurancePercentage = 1,
+        PensionContributionPercentage = 1,
+        PensionSolidarityFundContributionPercentage = 1)
+
+        salary_calculator = SalaryCalculator(accruals, deductions)
+
+        Result = salary_calculator.calculate_net_salary() 
+        self.assertEqual(round(Result, 1 ), 933140.0)
+
+    """1st error unit test in the case of the number of extra daylight hours worked exceeds 60"""
+    def testLimitOfExtraDaylightHours(self):
+        accruals = Accruals(
+            BasicSalary = 800000,
+            WorkedDays = 30,
+            HolidayTimeWorked = 0,
+            ExtraDaylightHoursWorked = 80,
+            ExtraNightHoursWorked = 0,
+            HolidayExtraDaylightHoursWorked = 0,
+            HolidayExtraNightHoursWorked = 0,
+            DaysOfDisability = 0,
+            LeaveDays = 5
+    )
+        with self.assertRaises(DataSizeLimitExceeded):
+            VerifyLimitOfExtraDaylightHoursWorked(accruals.ExtraDaylighthoursworked)
+
+    """2nd error unit test in the case of the number of extra night hours worked exceeds 60"""
+    def testLimitOfExtraNightghtHours(self):
+        accruals = Accruals(
+            BasicSalary = 10000000,
+            WorkedDays = 30,
+            HolidayTimeWorked = 0,
+            ExtraDaylightHoursWorked = 0,
+            ExtraNightHoursWorked = 90,
+            HolidayExtraDaylightHoursWorked = 0,
+            HolidayExtraNightHoursWorked = 0,
+            DaysOfDisability = 0,
+            LeaveDays = 5
+    )
+        with self.assertRaises(DataSizeLimitExceeded):
+            VerifyLimitOfExtraNightHoursWorked(accruals.ExtraNightHoursWorked)
+
+    """3rd error unit test in the case of a negative salary parameter"""
+    def testNegativeBasicSalary(self):
+        accruals = Accruals(
+            BasicSalary = -800000,
+            WorkedDays = 30,
+            HolidayTimeWorked = 0,
+            ExtraDaylightHoursWorked = 0,
+            ExtraNightHoursWorked = 0,
+            HolidayExtraDaylightHoursWorked = 0,
+            HolidayExtraNightHoursWorked = 0,
+            DaysOfDisability = 0,
+            LeaveDays = 5
+    )
+        with self.assertRaises(NegativeSalary):
+            VerifyNegativeSalary(accruals.BasicSalary)
+
+    """4th error unit test in the case of a negative worked days parameter"""
+    def testNegativeWorkedDays(self):
+        accruals = Accruals(
+            BasicSalary = 800000,
+            WorkedDays = -30,
+            HolidayTimeWorked = 0,
+            ExtraDaylightHoursWorked = 0,
+            ExtraNightHoursWorked = 0,
+            HolidayExtraDaylightHoursWorked = 0,
+            HolidayExtraNightHoursWorked = 0,
+            DaysOfDisability = 0,
+            LeaveDays = 5
+        )
+
+        with self.assertRaises(IllegalParameters):
+            VerifyNegativeWorkedDays(accruals.WorkedDays)
+
+    """5th error unit test in the case of zero worked days"""
+    def testZeroWorkedDays(self):
+        accruals = Accruals(
+            BasicSalary = 800000,
+            WorkedDays = 0, 
+            HolidayTimeWorked = 0,
+            ExtraDaylightHoursWorked = 0,
+            ExtraNightHoursWorked = 0,
+            HolidayExtraDaylightHoursWorked = 0,
+            HolidayExtraNightHoursWorked = 0,
+            DaysOfDisability = 0,
+            LeaveDays = 5
+        )
+        with self.assertRaises(IllegalParameters):
+            VerifyNonZeroWorkedDays(accruals.WorkedDays)
+
+    """6th error unit test in the case of a negative number of disability days"""
+    def testNegativeDisabilityDays(self):
+        accruals = Accruals(
+            BasicSalary = 9500000,
+            WorkedDays = 30, 
+            HolidayTimeWorked = 1,
+            ExtraDaylightHoursWorked = 3,
+            ExtraNightHoursWorked = 0,
+            HolidayExtraDaylightHoursWorked = 3,
+            HolidayExtraNightHoursWorked = 0,
+            DaysOfDisability = -4,
+            LeaveDays = 5
+        )
+        with self.assertRaises(IllegalParameters):
+            VerifyNegativeDisabilityDays(accruals.DaysOfDisability)
+
+    """7th error unit test in the case of basic salary value is not numeric"""
+    def testNumericBasicSalary(self):
+        accruals = {
+            "BasicSalary": "1000",
+            "WorkedDays": 18, 
+            "HolidayTimeWorked": 0,
+            "ExtraDaylightHoursWorked": 3,
+            "ExtraNightHoursWorked": 0,
+            "HolidayExtraDaylightHoursWorked": 0,
+            "HolidayExtraNightHoursWorked": 0,
+            "DaysOfDisability": 0,
+            "LeaveDays": 5
+        }
+        with self.assertRaises(DataTypeError):
+            VerifyBasicSalaryDataTypeError(**accruals)
+
+    """8th error unit test in the case of worked days value is not numeric"""
+    def testNumericBasicSalary(self):
+        accruals = {
+            "BasicSalary": 1000000,
+            "WorkedDays": "Hola", 
+            "HolidayTimeWorked": 0,
+            "ExtraDaylightHoursWorked": 3,
+            "ExtraNightHoursWorked": 0,
+            "HolidayExtraDaylightHoursWorked": 0,
+            "HolidayExtraNightHoursWorked": 0,
+            "DaysOfDisability": 0,
+            "LeaveDays": 5
+        }
+        with self.assertRaises(DataTypeError):
+            VerifyWorkedDaysDataTypeError(**accruals)
 
 if __name__ == '_main_':
    unittest.main()
