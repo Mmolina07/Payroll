@@ -348,4 +348,3 @@ def VerifyLimitOfExtraNightHoursWorked(ExtraDayNightHoursWorked):
     """This function verifies that the number of extra night hours worked doesn't exceed 60."""
     if ExtraDayNightHoursWorked > 60:
         raise DataSizeLimitExceeded("The number of extra daylight hours worked cannot exceed 60.")
-
