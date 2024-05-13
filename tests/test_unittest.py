@@ -3,8 +3,8 @@ import unittest
 import sys
 sys.path.append("src")
 
-import logic.Payroll_Logic as Payroll_Logic
-from logic.Payroll_Logic import *
+import model.Payroll_Logic as Payroll_Logic
+from model.Payroll_Logic import *
 
 class PayrollTests(unittest.TestCase):
 
