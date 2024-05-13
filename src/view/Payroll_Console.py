@@ -4,7 +4,7 @@ import sys
 
 sys.path.append("src")
 
-from logic.Payroll_Logic import *
+from model.Payroll_Logic import *
 
 def main():
     print("This program allows you to calculate the payroll accounting.")
