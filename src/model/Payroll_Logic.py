@@ -1,9 +1,12 @@
+from datetime import date
+
 class Employee:
 
-    def __init__(self, Name, Id, accruals):
-        self.Name = Name
-        self.Id = Id
-        self.accruals = accruals
+    def __init__(self, firstname, surname, idnumber, mail):
+        self.firstname = firstname
+        self.surname = surname
+        self.idnumber = idnumber
+        self.mail = mail
 
 """Accruals are all the items for which an employee receives remuneration."""
 class Accruals:

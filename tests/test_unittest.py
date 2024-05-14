@@ -1,10 +1,14 @@
 import unittest
 
+from datetime import date
+
 import sys
 sys.path.append("src")
 
 import model.Payroll_Logic as Payroll_Logic
+import controller.usercontroller as usercontroller
 from model.Payroll_Logic import *
+from controller.usercontroller import *
 
 class PayrollTests(unittest.TestCase):
 
@@ -424,5 +428,105 @@ class PayrollTests(unittest.TestCase):
         with self.assertRaises(DataTypeError):
             VerifyWorkedDaysDataTypeError(**accruals)
 
+
+class ControllerTest(unittest.TestCase):
+    """
+        Pruebas a la Clase Controlador de la aplicación
+    """
+
+    # TEST FIXTURES
+    # Codigo que se ejecuta antes de cada prueba
+
+    def setUp(self):
+        """ It is always executed before each test method """
+        print("Running setUp")
+        usercontroller.Deletelines() # Asegura que antes de cada metodo de prueba, se borren todos los datos de la tabla
+
+    def setUpClass():
+        """ Runs at the start of all tests """
+        print("Running setUpClass")
+        usercontroller.DeleteTable()
+        usercontroller.CreateTable()  # Asegura que al inicio de las pruebas, la tabla este creada
+
+    def tearDown(self):
+        """ Runs at the end of each test """
+        print("Running tearDown")
+
+    def tearDownClass():
+        """ Runs at the end of all tests """
+        print("Running tearDownClass")
+
+    def testInsert(self):
+        """ Verify that the creation and search for a user is working properly. """
+        # Pedimos crear un usuario
+        print("Running testInsert")
+        user_test = Employee( "mateo", "iyguy", "107898986357", "no@tiene.correo") 
+
+        usercontroller.Insert(user_test)
+
+        #Buscamos el usuario
+        searched_user = usercontroller.SearchById(user_test.idnumber)
+
+        #Verificamos que los datos del usuario sean correcto
+        if searched_user is not None:
+            self.assertEqual(user_test.firstname, searched_user.firstname)
+            self.assertEqual(user_test.surname, searched_user.surname)
+            self.assertEqual(user_test.idnumber, searched_user.idnumber)
+            self.assertEqual(user_test.mail, searched_user.mail)
+        else:
+            self.fail("User not found")
+
+    def testUpdate(self) :
+        """
+        Verifies the functionality of updating a user's data
+        """
+        print("Running testUpdate")
+        # 1. Crear el usuario
+        test_user = Employee( "mateo", "molina", "1234", "tampoco@tiene.correo") 
+        usercontroller.Insert( test_user )
+
+        # 2. Actualizarle datos
+        # usuario_prueba.cedula = "00000000" la cedula no se puede cambiar
+        test_user.firstname = "angie"
+        test_user.surname = "norela"
+        test_user.mail = "nuevo"
+        
+    
+        usercontroller.Update( test_user )
+
+        # 3. Consultarlo
+        updated_user = usercontroller.SearchById( test_user.idnumber )
+
+        # 4. assert
+        # Verificamos que los datos del usuario sean correcto
+        self.assertEqual( test_user.firstname, updated_user.firstname )
+        self.assertEqual( test_user.surname, updated_user.surname )
+        self.assertEqual( test_user.mail, updated_user.mail)
+
+        
+
+    def testDelete(self):
+        """ Test the functionality of deleting users """
+        print("Running testDelete")
+        test_user = Employee( "angie", "Borrenmme", "1234567", "no@tiene.correo") 
+        usercontroller.Insert( test_user )
+
+        # 2. Borrarlo
+        usercontroller.DeleteById( test_user)
+
+        # 3. Buscar para verificar que no exista
+        self.assertRaises( usercontroller.ErrorNoEncontrado, usercontroller.SearchById, test_user.idnumber)
+
+    
+    def testPrimaryKey(self):
+        """First error test, check if the primary key is working"""
+        print("Running primary key test")
+        test_user = Employee( "angie", "Boba", "12345", "noafdeafa@tiene.correo")
+        usercontroller.Insert(test_user)
+
+        test_user2 = Employee( "Norela", "Bofadsfa", "12345789", "no@tiene.correo")
+        usercontroller.Insert(test_user2)
+        
+        
 if __name__ == '_main_':
    unittest.main()
