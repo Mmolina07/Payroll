@@ -10,14 +10,6 @@ def main():
     print("This program allows you to calculate the payroll accounting.")
 
     print("")
-
-
-    firstname = str(input("Enter your  first name: "))
-    surname = str(input("Enter your first surname: "))
-    idnumber = str(input("Enter your number of ID: "))
-    mail = str(input("Enter your mail: "))
-
-
     
     while True:
         try:

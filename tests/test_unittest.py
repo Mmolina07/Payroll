@@ -435,17 +435,17 @@ class ControllerTest(unittest.TestCase):
     """
 
     # TEST FIXTURES
-    
+
     def setUp(self):
         """ It is always executed before each test method """
         print("Running setUp")
-        usercontroller.Deletelines() # Asegura que antes de cada metodo de prueba, se borren todos los datos de la tabla
+        usercontroller.Deletelines()
 
     def setUpClass():
         """ Runs at the start of all tests """
         print("Running setUpClass")
         usercontroller.DeleteTable()
-        usercontroller.CreateTable()  # Asegura que al inicio de las pruebas, la tabla este creada
+        usercontroller.CreateTable()
 
     def tearDown(self):
         """ Runs at the end of each test """
@@ -462,10 +462,10 @@ class ControllerTest(unittest.TestCase):
 
         usercontroller.Insert(user_test)
 
-        #Buscamos el usuario
+        
         searched_user = usercontroller.SearchById(user_test.idnumber)
 
-        #Verificamos que los datos del usuario sean correcto
+        #We verify that the user's data is correct.
         if searched_user is not None:
             self.assertEqual(user_test.firstname, searched_user.firstname)
             self.assertEqual(user_test.surname, searched_user.surname)
@@ -479,11 +479,11 @@ class ControllerTest(unittest.TestCase):
         Verifies the functionality of updating a user's data
         """
         print("Running testUpdate")
-        # 1. Crear el usuario
+        # 1. Create the user
         test_user = Employee( "mateo", "molina", "1234", "tampoco@tiene.correo") 
         usercontroller.Insert( test_user )
 
-        # 2. Actualizarle datos
+        # 2. update info
         # usuario_prueba.cedula = "00000000" la cedula no se puede cambiar
         test_user.firstname = "angie"
         test_user.surname = "norela"
@@ -492,11 +492,11 @@ class ControllerTest(unittest.TestCase):
     
         usercontroller.Update( test_user )
 
-        # 3. Consultarlo
+        # 3. Consult
         updated_user = usercontroller.SearchById( test_user.idnumber )
 
         # 4. assert
-        # Verificamos que los datos del usuario sean correcto
+        # We verify that the user's data is correct.
         self.assertEqual( test_user.firstname, updated_user.firstname )
         self.assertEqual( test_user.surname, updated_user.surname )
         self.assertEqual( test_user.mail, updated_user.mail)
