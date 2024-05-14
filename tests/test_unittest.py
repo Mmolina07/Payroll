@@ -435,8 +435,7 @@ class ControllerTest(unittest.TestCase):
     """
 
     # TEST FIXTURES
-    # Codigo que se ejecuta antes de cada prueba
-
+    
     def setUp(self):
         """ It is always executed before each test method """
         print("Running setUp")
@@ -525,6 +524,23 @@ class ControllerTest(unittest.TestCase):
 
         test_user2 = Employee( "Norela", "Bofadsfa", "12345789", "no@tiene.correo")
         usercontroller.Insert(test_user2)
+
+    def testSearchByNameAndSurname(self):
+        """First unitary test of search by full name"""
+        print("Running testSearchByNameAndSurname")
+        user_test = Employee( "Nicolás", "Gómez", "2047983664", "Nicolas@correo.com") 
+
+        usercontroller.Insert(user_test)
+
+        searched_user = usercontroller.SearchByNameAndSurname(user_test.firstname, user_test.surname)
+
+        if searched_user is not None:
+            self.assertEqual(user_test.firstname, searched_user.firstname)
+            self.assertEqual(user_test.surname, searched_user.surname)
+            self.assertEqual(user_test.idnumber, searched_user.idnumber)
+            self.assertEqual(user_test.mail, searched_user.mail)
+        else:
+            self.fail("User not found")
         
         
 if __name__ == '_main_':

@@ -1,31 +1,22 @@
 import psycopg2
 import sys
 sys.path.append("src")
-
+import controller.SecretConfig as SecretConfig
 from model.Payroll_Logic import *
-#import controller.SecretConfig as SecretConfig
-#import SecretConfig
+
 
 class ErrorNotfound( Exception ):
     """Exception indicating that a searched row was not found"""
     pass
 
 def GetCursor( ) :
-    DATABASE ='payrolldb'
-    USER = 'payrolldb_owner'
-    PASSWORD = 'lWnt2j1UHErS'
-    HOST = 'ep-flat-shadow-a5uorehb.us-east-2.aws.neon.tech'
-    PORT = 5432
-    connection = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
+    connection = psycopg2.connect(database=SecretConfig.PGDATABASE, user=SecretConfig.PGUSER,
+                                password=SecretConfig.PGPASSWORD, host=SecretConfig.PGHOST, port=SecretConfig.PGPORT)
     return connection.cursor()
 
 def CreateTable():
-    DATABASE ='payrolldb'
-    USER = 'payrolldb_owner'
-    PASSWORD = 'lWnt2j1UHErS'
-    HOST = 'ep-flat-shadow-a5uorehb.us-east-2.aws.neon.tech'
-    PORT = 5432
-    connection = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
+    connection = psycopg2.connect(database=SecretConfig.PGDATABASE, user=SecretConfig.PGUSER,
+                                password=SecretConfig.PGPASSWORD, host=SecretConfig.PGHOST, port=SecretConfig.PGPORT)
     cursor = connection.cursor()
     cursor.execute("""create table employees (
         firstname text not null,
@@ -118,12 +109,8 @@ def SearchById(idnumber):
     
 
 def CreateAccrualsTable():
-    DATABASE ='payrolldb'
-    USER = 'payrolldb_owner'
-    PASSWORD = 'lWnt2j1UHErS'
-    HOST = 'ep-flat-shadow-a5uorehb.us-east-2.aws.neon.tech'
-    PORT = 5432
-    connection = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
+    connection = psycopg2.connect(database=SecretConfig.PGDATABASE, user=SecretConfig.PGUSER,
+                                password=SecretConfig.PGPASSWORD, host=SecretConfig.PGHOST, port=SecretConfig.PGPORT)
     cursor = connection.cursor()
     cursor.execute("""create table accruals (
                     BasicSalary varchar( 20 ) not null,
@@ -159,12 +146,9 @@ def InsertAccruals(accruals: Accruals):
     
 
 def CreateTableDeductions():
-    DATABASE ='payrolldb'
-    USER = 'payrolldb_owner'
-    PASSWORD = 'lWnt2j1UHErS'
-    HOST = 'ep-flat-shadow-a5uorehb.us-east-2.aws.neon.tech'
-    PORT = 5432
-    connection = psycopg2.connect(database=DATABASE, user=USER, password=PASSWORD, host=HOST, port=PORT)
+    
+    connection = psycopg2.connect(database=SecretConfig.PGDATABASE, user=SecretConfig.PGUSER,
+                                password=SecretConfig.PGPASSWORD, host=SecretConfig.PGHOST, port=SecretConfig.PGPORT)
     cursor = connection.cursor()
     cursor.execute("""create table Deductions (
         HealthInsurancePercentage varchar( 5 ) NOT NULL,
@@ -186,3 +170,22 @@ def InsertDeductions( deductions:Deductions):
     );
     """)
     cursor.connection.commit()
+
+
+# Función que busca por nombre
+
+def SearchByNameAndSurname(firstname, surname):
+
+    cursor = GetCursor()
+    consulta = f"""SELECT firstname, surname, idnumber, mail
+                from employees where firstname = '{firstname}' and surname = '{surname}' """
+    cursor = GetCursor()
+    cursor.execute(consulta)
+
+    result = cursor.fetchone()
+
+    if result is not None:
+        return Employee(result[0], result[1], result[2], result[3])
+    else:
+        return None
+    
