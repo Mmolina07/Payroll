@@ -14,5 +14,4 @@ try:
     print (f"User found: {searched_user.firstname} {searched_user.surname}")
 
 except Exception as err:
-    print ("Error: ")
-    print (str(err))
+    print ("Error: " + str(err))
