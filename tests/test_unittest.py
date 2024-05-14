@@ -458,7 +458,6 @@ class ControllerTest(unittest.TestCase):
 
     def testInsert(self):
         """ Verify that the creation and search for a user is working properly. """
-        # Pedimos crear un usuario
         print("Running testInsert")
         user_test = Employee( "mateo", "iyguy", "107898986357", "no@tiene.correo") 
 
@@ -511,11 +510,11 @@ class ControllerTest(unittest.TestCase):
         test_user = Employee( "angie", "Borrenmme", "1234567", "no@tiene.correo") 
         usercontroller.Insert( test_user )
 
-        # 2. Borrarlo
+        # 2. Delete
         usercontroller.DeleteById( test_user)
 
-        # 3. Buscar para verificar que no exista
-        self.assertRaises( usercontroller.ErrorNoEncontrado, usercontroller.SearchById, test_user.idnumber)
+        # 3. Search to verify that it does not exist
+        self.assertRaises( usercontroller.ErrorNotfound, usercontroller.SearchById, test_user.idnumber)
 
     
     def testPrimaryKey(self):

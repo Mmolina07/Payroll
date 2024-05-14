@@ -113,8 +113,8 @@ def SearchById(idnumber):
         # If a result is found, create an Employee object
         return Employee(result[0], result[1], result[2], result[3])
     else:
-        # If no result is found, return None
-        return None
+        # If no result is found, return message
+        raise ErrorNotfound("Employee not found")
     
 
 def CreateAccrualsTable():

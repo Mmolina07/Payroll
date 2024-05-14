@@ -11,7 +11,8 @@ from controller.usercontroller import *
 
 
 
-user_test = Employee("mateo", "iyguy", "1000", "no@tiene.correo")
+#user_test = Employee("mateo", "iyguy", "1000", "no@tiene.correo")
+user_test = Employee( "Angie", "Diaz", "1028497625", "ad@gmail.com")
 
 #user_test.firstname =firstname = str(input("Enter your  first name: "))
 #user_test.surname = str(input("Enter your first surname: "))
