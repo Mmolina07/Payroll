@@ -21,6 +21,49 @@ This program is designed to automate the calculations performed in the payroll p
 
 ## Prerequisites for using the program: 
 
+## Prerequisites:
+
+Make sure you have a PostgreSQL database and its respective access data
+
+Psycopg is a PostgreSQL adapter for the Python programming language. It is a wrapper for the libpq, the official PostgreSQL client library
+
+Quick install:
+For most operating systems, the quickest way to install Psycopg is using the wheel package available on PyPI:
+
+$ pip install psycopg2-binary
+
+This will install a pre-compiled binary version of the module which does not require the build or runtime prerequisites described below. Make sure to use an up-to-date version of pip (you can upgrade it using something like pip install -U pip).
+
+You may then import the psycopg2 package, as usual:
+
+"""
+import psycopg2
+
+# Connect to your postgres DB
+conn = psycopg2.connect("dbname=test user=postgres")
+
+# Open a cursor to perform database operations
+cur = conn.cursor()
+
+# Execute a query
+cur.execute("SELECT * FROM my_data")
+
+# Retrieve query results
+records = cur.fetchall()
+"""
+
+## Connection to Base Data:
+
+Copy the file SecretConfig-sample.py as SecretConfig.py and set the connection data to your database in this file.
+
+In the SecretConfig-Sample file you will find the data required to connect to the database, this data can be found in the Dashboard of your database
+
+## How to use it?
+
+This application requires the creation of three essential tables: employees, earnings, and deductions. The tables can be created through the console. Employee information will be linked by their ID. The tables can be modified, deleted, and information can be inserted into them. Additionally, it allows for querying and calculating payroll settlements for users in the database.
+
+To create a table, go to the "view" folder and the "create_table" file. To insert information into the table, go to the "create_user" file. For queries in the database, navigate to the "search_user" file. And to update or modify information, go to the "modify_info" file.
+
 ### Python Installed:
 
 1. Open your web browser and go to the official [Python](https://www.python.org/) site.

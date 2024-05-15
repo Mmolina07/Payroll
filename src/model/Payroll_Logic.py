@@ -8,22 +8,39 @@ class Employee:
         self.idnumber = idnumber
         self.mail = mail
 
+    def __eq__(self, other):
+        if isinstance(other, Employee):
+            return (self.firstname == other.firstname and 
+                    self.surname == other.surname and 
+                    self.idnumber == other.idnumber and 
+                    self.mail == other.mail)
+        return False
+
 """Accruals are all the items for which an employee receives remuneration."""
 class Accruals:
     
-    def __init__(self, BasicSalary, WorkedDays, HolidayTimeWorked, ExtraDaylightHoursWorked,
+    def __init__(self,idnumber, BasicSalary, WorkedDays, HolidayTimeWorked, ExtraDaylightHoursWorked,
                 ExtraNightHoursWorked, HolidayExtraDaylightHoursWorked,
                 HolidayExtraNightHoursWorked, DaysOfDisability, LeaveDays):
         
-        self.BasicSalary = BasicSalary
-        self.WorkedDays = WorkedDays
-        self.holidaytimeworked = HolidayTimeWorked
-        self.ExtraDaylighthoursworked = ExtraDaylightHoursWorked
-        self.ExtraNightHoursWorked = ExtraNightHoursWorked
-        self.HolidayExtraDaylightHoursworked = HolidayExtraDaylightHoursWorked
-        self.HolidayExtraNightHoursWorked = HolidayExtraNightHoursWorked
-        self.DaysOfDisability = DaysOfDisability
-        self.LeaveDays = LeaveDays 
+        self.idnumber = int(idnumber)
+        self.BasicSalary = float(BasicSalary)
+        self.WorkedDays = int(WorkedDays)
+        self.HolidayTimeWorked = float(HolidayTimeWorked)
+        self.ExtraDaylightHoursWorked = float(ExtraDaylightHoursWorked)
+        self.ExtraNightHoursWorked = float(ExtraNightHoursWorked)
+        self.HolidayExtraDaylightHoursWorked = float(HolidayExtraDaylightHoursWorked)
+        self.HolidayExtraNightHoursWorked = float(HolidayExtraNightHoursWorked)
+        self.DaysOfDisability = int(DaysOfDisability)
+        self.LeaveDays = int(LeaveDays)
+
+
+    def __eq__(self, other):
+        if isinstance(other, Accruals):
+            return self.__dict__ == other.__dict__
+        return False
+
+
 
     """This function calculates the employee's daily salary"""
     def CalculateDailySalary(self):
@@ -70,7 +87,7 @@ class Accruals:
         """The surcharge for holiday hours worked according to the law is 75%."""
         HolidaySurchargePercentage = 0.75
 
-        HolidayRecharge = (DailySalary * HolidaySurchargePercentage) * self.holidaytimeworked
+        HolidayRecharge = (DailySalary * HolidaySurchargePercentage) * self.HolidayTimeWorked
         return HolidayRecharge
 
     """This function calculates the surcharge value of daylight extra hours worked."""
@@ -78,7 +95,7 @@ class Accruals:
         """The value for a daylight hour worked according to the law is 6915COP."""
         DaylightHourSurcharge = 6915
 
-        DaylightSurchargeValue = DaylightHourSurcharge * self.ExtraDaylighthoursworked
+        DaylightSurchargeValue = DaylightHourSurcharge * self.ExtraDaylightHoursWorked
         return DaylightSurchargeValue
 
     """This function calculates the surcharge value of night extra hours worked."""
@@ -94,7 +111,7 @@ class Accruals:
 
         """The surcharge for a holiday extra daylight hour worked according to the law is 11064COP."""
         HolidayExtraDaylightHoursWorkedSurcharge = 11064
-        HolidayExtraDaylightHoursWorkedSurchargeValue = HolidayExtraDaylightHoursWorkedSurcharge * self.HolidayExtraDaylightHoursworked
+        HolidayExtraDaylightHoursWorkedSurchargeValue = HolidayExtraDaylightHoursWorkedSurcharge * self.HolidayExtraDaylightHoursWorked
         
         return HolidayExtraDaylightHoursWorkedSurchargeValue
 
@@ -149,7 +166,7 @@ class Accruals:
             LeaveDaysValue = DailySalary * DaysOfBereavementLeave
         elif self.LeaveDays == 4:
             LeaveDaysValue = DailySalary * DaysOfCareForMinorChildrenLeave
-        elif self.LeaveDays == 5:
+        else:
             LeaveDaysValue = 0
 
         return LeaveDaysValue
@@ -171,13 +188,14 @@ class Accruals:
 """Deductions are the discounts that are made at the time of paying the salary to the employees."""
 class Deductions:
 
-    def __init__(self, accruals, HealthInsurancePercentage, PensionContributionPercentage,
+    def __init__(self,idnumber, accruals, HealthInsurancePercentage, PensionContributionPercentage,
                 PensionSolidarityFundContributionPercentage):
         
+        self.idnumber = int(idnumber)
         self.accruals = accruals
-        self.HealthInsurancePercentage = HealthInsurancePercentage
-        self.PensionContributionPercentage = PensionContributionPercentage
-        self.PensionSolidarityFundContributionPercentage = PensionSolidarityFundContributionPercentage
+        self.HealthInsurancePercentage = float(HealthInsurancePercentage)
+        self.PensionContributionPercentage = float(PensionContributionPercentage)
+        self.PensionSolidarityFundContributionPercentage = float(PensionSolidarityFundContributionPercentage)
 
     """This function calculates the employee's health contribution percentage to be discounted."""
     def CalculateHealthInsurance(self):

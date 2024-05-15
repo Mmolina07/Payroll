@@ -18,8 +18,6 @@ sys.path.append("src")
 
 from model.Payroll_Logic import *
 
-
-
 class WelcomePopup(Popup):
     def __init__(self, **kwargs):
         super(WelcomePopup, self).__init__(**kwargs)
