@@ -208,16 +208,22 @@ def Deletelines():
 def SearchInAllTablesByID(idnumber):
     cursor = GetCursor()
     consulta = f"""
-    SELECT e.firstname, e.surname, e.idnumber, e.mail, a.BasicSalary, a.WorkedDays, a.HolidayTimeWorked, a.ExtraDaylightHoursWorked, a.ExtraNightHoursWorked,
-        a.HolidayExtraDaylightHoursWorked, a.HolidayExtraNightHoursWorked, a.DaysOfDisability, a.LeaveDays, d.HealthInsurancePercentage,
-        d.PensionContributionPercentage, d.PensionSolidarityFundContributionPercentage
+    SELECT e.firstname, e.surname, e.idnumber, e.mail, 
+           a.BasicSalary, a.WorkedDays, a.HolidayTimeWorked, a.ExtraDaylightHoursWorked, a.ExtraNightHoursWorked,
+           a.HolidayExtraDaylightHoursWorked, a.HolidayExtraNightHoursWorked, a.DaysOfDisability, a.LeaveDays, 
+           d.HealthInsurancePercentage, d.PensionContributionPercentage, d.PensionSolidarityFundContributionPercentage
     FROM employees e
     JOIN accruals a ON e.idnumber = a.idnumber
     JOIN deductions d ON e.idnumber = d.idnumber
-    WHERE e.idnumber = '{idnumber}' """
+    WHERE e.idnumber = '{idnumber}'
+    """
+    
+    print(f"Debug: Executing query:\n{consulta}")
+    
     cursor.execute(consulta)
-
     result = cursor.fetchone()
+    
+    print(f"Debug: Query result: {result}")
 
     if result is not None:
         employee = Employee(result[0], result[1], result[2], result[3])
@@ -226,6 +232,7 @@ def SearchInAllTablesByID(idnumber):
         return (employee, accruals, deductions)
     else:
         raise ErrorNotfound("Employee not found")
+
     
 
 def SearchAccrualsById(idnumber):
