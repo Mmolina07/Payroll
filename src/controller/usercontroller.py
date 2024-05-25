@@ -24,7 +24,7 @@ def Insert(employee: Employee):
         cursor.connection.commit()
     except Exception as e:
         cursor.connection.rollback()
-        if "duplicate" in str(e).lower():  # Adjust this check based on the actual error message
+        if "duplicate" in str(e).lower(): 
             raise RepeatedUser(f"Id repeated. It was not possible to add the employee: {employee.idnumber}")
         else:
             raise
@@ -218,12 +218,10 @@ def SearchInAllTablesByID(idnumber):
     WHERE e.idnumber = '{idnumber}'
     """
     
-    print(f"Debug: Executing query:\n{consulta}")
     
     cursor.execute(consulta)
     result = cursor.fetchone()
     
-    print(f"Debug: Query result: {result}")
 
     if result is not None:
         employee = Employee(result[0], result[1], result[2], result[3])
