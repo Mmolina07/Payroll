@@ -220,7 +220,7 @@ def main_menu():
         print("\nMain Menu:")
         print("1. Search by ID")
         print("2. Search by Name and Surname")
-        print("3. Search in all tables by ID")
+        print("3. Consult payroll by ID")
         print("4. Modify Employee Info")
         print("5. Insert an user")
         print("6. Modify, add and delete Tables")
