@@ -52,7 +52,7 @@ cur.execute("SELECT * FROM my_data")
 records = cur.fetchall()
 """
 
-## Connection to Base Data:
+## Connection to DataBase:
 
 Copy the file SecretConfig-sample.py as SecretConfig.py and set the connection data to your database in this file.
 
